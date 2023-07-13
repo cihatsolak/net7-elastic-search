@@ -1,6 +1,6 @@
 ﻿namespace ElasticSearch.API.Extensions;
 
-public static class ElasticSearchDI
+public static class ElasticSearchDIExtension
 {
     public static void AddCustomElasticSearch(this IServiceCollection services, IConfiguration configuration)
     {
