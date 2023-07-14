@@ -15,7 +15,7 @@ public class ProductRepository
         product.Updated = null;
 
         //var response = await _elasticClient.IndexAsync(data, Tablo ismi);
-        var result = await _elasticClient.IndexAsync(product, p => p.Index("Products"));
+        var result = await _elasticClient.IndexAsync(product, p => p.Index("products"));
         if (!result.IsValid)
         {
             throw new Exception("Adding product failed.");

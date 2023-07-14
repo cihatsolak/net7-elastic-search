@@ -1,0 +1,20 @@
+﻿namespace ElasticSearch.API.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class ProductsController : ControllerBase
+{
+    private readonly ProductService _productService;
+
+    public ProductsController(ProductService productService)
+    {
+        _productService = productService;
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Insert(ProductCreateDto request)
+    {
+        var response = await _productService.InsertAsync(request);
+        return Ok(response);
+    }
+}
