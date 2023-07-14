@@ -2,7 +2,7 @@
 
 [Route("api/[controller]")]
 [ApiController]
-public class ProductsController : ControllerBase
+public class ProductsController : BaseController
 {
     private readonly ProductService _productService;
 
@@ -15,6 +15,6 @@ public class ProductsController : ControllerBase
     public async Task<IActionResult> Insert(ProductCreateDto request)
     {
         var response = await _productService.InsertAsync(request);
-        return Ok(response);
+        return CreateActionResult(response);
     }
 }
