@@ -4,7 +4,7 @@
     {
         //Elastic Search Auto Id. Elastic search tarafından gerçekten bir id olarak tutulmasını istiyorsak
         //Elastic tarafından primary key görevi görsün
-        [PropertyName("_id")] 
+        [PropertyName("_id")]
         public string Id { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; }
@@ -12,5 +12,30 @@
         public DateTime? Created { get; set; }
         public DateTime? Updated { get; set; }
         public ProductFeature Feature { get; set; }
+
+        public ProductDto CreateDto()
+        {
+            var productDto = new ProductDto()
+            {
+                Id = Id,
+                Name = Name,
+                Price = Price,
+                Stock = Stock,
+            };
+
+            if (Feature == null)
+            {
+                return productDto;
+            }
+
+            productDto.Feature = new ProductFeatureDto
+            {
+                Width = Feature.Width,
+                Height = Feature.Height,
+                Color = Feature.Color
+            };
+
+            return productDto;
+        }
     }
 }
