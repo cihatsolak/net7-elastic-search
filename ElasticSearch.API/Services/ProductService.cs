@@ -1,8 +1,4 @@
-﻿using ElasticSearch.API.Models;
-using System.Collections.Immutable;
-using System.Globalization;
-
-namespace ElasticSearch.API.Services;
+﻿namespace ElasticSearch.API.Services;
 
 public class ProductService
 {
@@ -71,5 +67,16 @@ public class ProductService
         }
 
         return ResponseDto<ProductDto>.Success(hasProduct.CreateDto(), HttpStatusCode.OK);
+    }
+
+    public async Task<ResponseDto<bool>> UpdateAsync(ProductUpdateDto productUpdateDto)
+    {
+        bool succeeded = await _productRepository.UpdateAsync(productUpdateDto);
+        if (!succeeded)
+        {
+            return ResponseDto<bool>.Fail("The product could not be updated.", HttpStatusCode.InternalServerError);
+        }
+
+        return ResponseDto<bool>.Success(succeeded, HttpStatusCode.NoContent);
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace ElasticSearch.API.Controllers;
+﻿using Nest;
+
+namespace ElasticSearch.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -29,6 +31,13 @@ public class ProductsController : BaseController
     public async Task<IActionResult> GetById(string id)
     {
         var response = await _productService.GetByIdAsync(id);
+        return CreateActionResult(response);
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> Update([FromBody] ProductUpdateDto request)
+    {
+        var response = await _productService.UpdateAsync(request);
         return CreateActionResult(response);
     }
 }

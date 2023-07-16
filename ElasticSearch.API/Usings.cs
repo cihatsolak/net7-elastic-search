@@ -7,4 +7,5 @@ global using ElasticSearch.API.Services;
 global using ElasticSearch.API.Settings;
 global using Microsoft.AspNetCore.Mvc;
 global using Nest;
+global using System.Collections.Immutable;
 global using System.Net;

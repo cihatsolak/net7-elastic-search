@@ -1,6 +1,4 @@
-﻿using System.Collections.Immutable;
-
-namespace ElasticSearch.API.Repositories;
+﻿namespace ElasticSearch.API.Repositories;
 
 public class ProductRepository
 {
@@ -64,5 +62,11 @@ public class ProductRepository
         response.Source.Id = response.Id;
 
         return response.Source;
+    }
+
+    public async Task<bool> UpdateAsync(ProductUpdateDto productUpdateDto)
+    {
+        var response = await _elasticClient.UpdateAsync<Product, ProductUpdateDto>(productUpdateDto.Id, x => x.Index(PRODUCT_INDEX_NAME).Doc(productUpdateDto));
+        return response.IsValid;
     }
 }
