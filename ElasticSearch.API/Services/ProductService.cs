@@ -1,4 +1,6 @@
-﻿namespace ElasticSearch.API.Services;
+﻿using ElasticSearch.API.DTOs;
+
+namespace ElasticSearch.API.Services;
 
 public class ProductService
 {
@@ -75,6 +77,17 @@ public class ProductService
         if (!succeeded)
         {
             return ResponseDto<bool>.Fail("The product could not be updated.", HttpStatusCode.InternalServerError);
+        }
+
+        return ResponseDto<bool>.Success(succeeded, HttpStatusCode.NoContent);
+    }
+
+    public async Task<ResponseDto<bool>> DeleteAsync(string id)
+    {
+        bool succeeded = await _productRepository.DeleteAsync(id);
+        if (!succeeded)
+        {
+            return ResponseDto<bool>.Fail("The product could not be deleted.", HttpStatusCode.InternalServerError);
         }
 
         return ResponseDto<bool>.Success(succeeded, HttpStatusCode.NoContent);

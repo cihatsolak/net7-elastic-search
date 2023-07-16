@@ -66,7 +66,13 @@ public class ProductRepository
 
     public async Task<bool> UpdateAsync(ProductUpdateDto productUpdateDto)
     {
-        var response = await _elasticClient.UpdateAsync<Product, ProductUpdateDto>(productUpdateDto.Id, x => x.Index(PRODUCT_INDEX_NAME).Doc(productUpdateDto));
-        return response.IsValid;
+        var updateResponse = await _elasticClient.UpdateAsync<Product, ProductUpdateDto>(productUpdateDto.Id, x => x.Index(PRODUCT_INDEX_NAME).Doc(productUpdateDto));
+        return updateResponse.IsValid;
+    }
+
+    public async Task<bool> DeleteAsync(string id)
+    {
+        var deleteResponse = await _elasticClient.DeleteAsync<Product>(id, x => x.Index(PRODUCT_INDEX_NAME));
+        return deleteResponse.IsValid;
     }
 }

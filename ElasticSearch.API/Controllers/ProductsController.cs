@@ -40,4 +40,11 @@ public class ProductsController : BaseController
         var response = await _productService.UpdateAsync(request);
         return CreateActionResult(response);
     }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(string id)
+    {
+        var response = await _productService.DeleteAsync(id);
+        return CreateActionResult(response);
+    }
 }
