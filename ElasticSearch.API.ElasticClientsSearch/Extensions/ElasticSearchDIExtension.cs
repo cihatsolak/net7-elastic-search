@@ -6,14 +6,12 @@ public static class ElasticSearchDIExtension
     {
         ElasticSetting elasticSetting = configuration.GetSection("ElasticSetting").Get<ElasticSetting>();
 
-        //Gerçek hayatta birden fazla node ile çalışılabilir ama docker da tek node çalışıyoruz.
-        var singleNodeConnectionPool = new SingleNodeConnectionPool(new Uri(elasticSetting.Uri));
-        var connectionString = new ConnectionSettings(singleNodeConnectionPool).DisableDirectStreaming();
+        var elasticsearchClientSettings = new ElasticsearchClientSettings(new Uri(elasticSetting.Uri));
 
-        //connectionString = connectionString.BasicAuthentication(elasticSetting.Username, elasticSetting.Password);
+        elasticsearchClientSettings.Authentication(new BasicAuthentication(elasticSetting.Username, elasticSetting.Password));
 
-        var elasticClient = new ElasticClient(connectionString);
+        var elasticsearchClient = new ElasticsearchClient(elasticsearchClientSettings);
 
-        services.AddSingleton(elasticClient);
+        services.AddSingleton(elasticsearchClient);
     }
 }

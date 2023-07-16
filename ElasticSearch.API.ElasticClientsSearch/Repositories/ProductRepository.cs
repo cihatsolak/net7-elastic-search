@@ -2,12 +2,12 @@
 
 public class ProductRepository
 {
-    private readonly ElasticClient _elasticClient;
+    private readonly ElasticsearchClient _elasticsearchClient;
     private const string PRODUCT_INDEX_NAME = "products";
 
-    public ProductRepository(ElasticClient elasticClient)
+    public ProductRepository(ElasticsearchClient elasticsearchClient)
     {
-        _elasticClient = elasticClient;
+        _elasticsearchClient = elasticsearchClient;
     }
 
     public async Task<Product> InsertAsync(Product product)
@@ -24,37 +24,37 @@ public class ProductRepository
 
         //id belirleme
         string id = Guid.NewGuid().ToString();
-        var result = await _elasticClient.IndexAsync(product, p => p.Index(PRODUCT_INDEX_NAME).Id(id));
-        if (!result.IsValid)
+        var response = await _elasticsearchClient.IndexAsync(product, p => p.Index(PRODUCT_INDEX_NAME).Id(id));
+        if (!response.IsValidResponse)
         {
             throw new Exception("Adding product failed.");
         }
 
-        product.Id = result.Id;
+        product.Id = response.Id;
 
         return product;
     }
 
     public async Task<ImmutableList<Product>> GetAllAsync()
     {
-        var result = await _elasticClient.SearchAsync<Product>(search => search.Index(PRODUCT_INDEX_NAME).Query(query => query.MatchAll()));
-        if (!result.IsValid)
+        var response = await _elasticsearchClient.SearchAsync<Product>(search => search.Index(PRODUCT_INDEX_NAME).Query(query => query.MatchAll()));
+        if (!response.IsValidResponse)
         {
             return (ImmutableList<Product>)Enumerable.Empty<Product>();
         }
 
-        foreach (var hit in result.Hits) //ürün id'lerini almak
+        foreach (var hit in response.Hits) //ürün id'lerini almak
         {
             hit.Source.Id = hit.Id;
         }
 
-        return result.Documents.ToImmutableList();
+        return response.Documents.ToImmutableList();
     }
 
     public async Task<Product> GetByIdAsync(string id)
     {
-        var response = await _elasticClient.GetAsync<Product>(id, x => x.Index(PRODUCT_INDEX_NAME));
-        if (!response.IsValid)
+        var response = await _elasticsearchClient.GetAsync<Product>(id, x => x.Index(PRODUCT_INDEX_NAME));
+        if (!response.IsValidResponse)
         {
             return default;
         }
@@ -66,13 +66,13 @@ public class ProductRepository
 
     public async Task<bool> UpdateAsync(ProductUpdateDto productUpdateDto)
     {
-        var updateResponse = await _elasticClient.UpdateAsync<Product, ProductUpdateDto>(productUpdateDto.Id, x => x.Index(PRODUCT_INDEX_NAME).Doc(productUpdateDto));
-        return updateResponse.IsValid;
+        var updateResponse = await _elasticsearchClient.UpdateAsync<Product, ProductUpdateDto>(PRODUCT_INDEX_NAME, productUpdateDto.Id, x => x.Doc(productUpdateDto));
+        return updateResponse.IsValidResponse;
     }
 
     public async Task<DeleteResponse> DeleteAsync(string id)
     {
-        var deleteResponse = await _elasticClient.DeleteAsync<Product>(id, x => x.Index(PRODUCT_INDEX_NAME));
+        var deleteResponse = await _elasticsearchClient.DeleteAsync<Product>(id, x => x.Index(PRODUCT_INDEX_NAME));
         return deleteResponse;
     }
 }

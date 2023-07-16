@@ -1,17 +1,9 @@
-﻿using ElasticSearch.API.ElasticClientsSearch.DTOs;
-using ElasticSearch.API.Nest.DTOs;
-
-namespace ElasticSearch.API.ElasticClientsSearch.Models
+﻿namespace ElasticSearch.API.ElasticClientsSearch.Models
 {
     public class Product
     {
-        //Elastic Search Auto Id. Elastic search tarafından gerçekten bir id olarak tutulmasını istiyorsak
-        //Elastic tarafından primary key görevi görsün
-        [PropertyName("_id")]
         public string Id { get; set; }
         public string Name { get; set; }
-
-        [Number(NumberType.Double)]
         public double Price { get; set; }
         public int Stock { get; set; }
         public DateTime? Created { get; set; }

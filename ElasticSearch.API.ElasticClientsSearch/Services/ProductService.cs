@@ -90,13 +90,15 @@ public class ProductService
             return ResponseDto<bool>.Fail("The item to be deleted was not found.", HttpStatusCode.NotFound);
         }
 
-        if (!deleteResponse.IsValid)
+        if (!deleteResponse.IsValidResponse)
         {
-            _logger.LogError(deleteResponse.OriginalException, deleteResponse.ServerError.Error.ToString()); //error log
+            deleteResponse.TryGetOriginalException(out Exception exception);
+
+            _logger.LogError(exception, deleteResponse.ElasticsearchServerError.Error.ToString()); //error log
 
             return ResponseDto<bool>.Fail("The product could not be deleted.", HttpStatusCode.InternalServerError);
         }
 
-        return ResponseDto<bool>.Success(deleteResponse.IsValid, HttpStatusCode.NoContent);
+        return ResponseDto<bool>.Success(deleteResponse.IsValidResponse, HttpStatusCode.NoContent);
     }
 }
