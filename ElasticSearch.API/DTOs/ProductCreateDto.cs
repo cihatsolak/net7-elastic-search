@@ -4,7 +4,7 @@
     public record ProductCreateDto
     {
         public string Name { get; init; }
-        public decimal Price { get; init; }
+        public float Price { get; init; }
         public int Stock { get; init; }
         public ProductFeatureDto Feature { get; init; }
 

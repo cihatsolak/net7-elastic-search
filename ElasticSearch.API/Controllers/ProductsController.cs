@@ -17,4 +17,11 @@ public class ProductsController : BaseController
         var response = await _productService.InsertAsync(request);
         return CreateActionResult(response);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var response = await _productService.GetAllAsync();
+        return CreateActionResult(response);
+    }
 }

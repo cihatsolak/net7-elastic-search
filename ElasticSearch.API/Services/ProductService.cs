@@ -1,4 +1,7 @@
-﻿namespace ElasticSearch.API.Services;
+﻿using ElasticSearch.API.Models;
+using System.Collections.Immutable;
+
+namespace ElasticSearch.API.Services;
 
 public class ProductService
 {
@@ -9,14 +12,52 @@ public class ProductService
         _productRepository = productRepository;
     }
 
-    public async Task<ResponseDto<ProductDto>>  InsertAsync(ProductCreateDto request)
+    public async Task<ResponseDto<ProductDto>> InsertAsync(ProductCreateDto request)
     {
         var responseProduct = await _productRepository.InsertAsync(request.CreateProduct());
-        if (responseProduct == null) 
+        if (responseProduct == null)
         {
-            return ResponseDto<ProductDto>.Fail("kayıt esnasında hata meydana geldi.", HttpStatusCode.InternalServerError);
+            return ResponseDto<ProductDto>.Fail("An error occurred while inserting.", HttpStatusCode.InternalServerError);
         }
 
         return ResponseDto<ProductDto>.Success(responseProduct.CreateDto(), HttpStatusCode.Created);
+    }
+
+    public async Task<ResponseDto<ImmutableList<ProductDto>>> GetAllAsync()
+    {
+        var products = await _productRepository.GetAllAsync();
+        if (!products.Any())
+        {
+            return ResponseDto<ImmutableList<ProductDto>>.Fail("product not found.", HttpStatusCode.NotFound);
+        }
+
+        List<ProductDto> productDTOs = new();
+
+        foreach (var product in products)
+        {
+            ProductDto productDto = new()
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Price = product.Price,
+                Stock = product.Stock,
+                Created = product.Created,
+                Updated = product.Updated
+            };
+
+            if (product.Feature is not null)
+            {
+                productDto.Feature = new ProductFeatureDto
+                {
+                    Width = product.Feature.Width,
+                    Height = product.Feature.Height,
+                    Color = product.Feature.Color
+                };
+            }
+
+            productDTOs.Add(productDto);
+        }
+
+        return ResponseDto<ImmutableList<ProductDto>>.Success(productDTOs.ToImmutableList(), HttpStatusCode.OK);
     }
 }
