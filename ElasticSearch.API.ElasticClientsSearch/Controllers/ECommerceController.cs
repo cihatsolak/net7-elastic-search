@@ -17,5 +17,13 @@
             var response = await _repository.TermQueryAsync(customerFirstName);
             return Ok(response);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> TermsQuery(List<string> customerFirstNameList)
+        {
+            var response = await _repository.TermsQueryAsync(customerFirstNameList);
+            return Ok(response);
+        }
+
     }
 }

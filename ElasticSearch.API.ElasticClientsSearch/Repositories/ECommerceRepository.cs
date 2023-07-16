@@ -43,5 +43,32 @@ namespace ElasticSearch.API.ElasticClientsSearch.Repositories
 
             return result.Documents.ToImmutableList();
         }
+
+        public async Task<ImmutableList<ECommerce>> TermsQueryAsync(List<string> customerFirstNameList)
+        {
+            var customerFirstNameTerms = customerFirstNameList.ConvertAll<FieldValue>(p => p);
+
+            var result = await _elasticsearchClient.SearchAsync<ECommerce>(
+                search => search.Index(INDEX_NAME).Size(100)
+                                                  .Query(query => 
+                                                         query.Terms(terms => 
+                                                                     terms.Field(fields => 
+                                                                                 fields.CustomerFirstName.Suffix("keyword")).Terms(new TermsQueryField(customerFirstNameTerms)))));
+            //2.Yol
+            //var termsQuery = new TermsQuery()
+            //{
+            //    Field = "customer_first_name.keyword",
+            //    Terms = new TermsQueryField(customerFirstNameTerms)
+            //};
+
+            //var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME).Query(termsQuery));
+
+            foreach (var hit in result.Hits)
+            {
+                hit.Source.Id = hit.Id;
+            }
+
+            return result.Documents.ToImmutableList();
+        }
     }
 }
