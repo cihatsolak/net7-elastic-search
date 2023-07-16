@@ -1,14 +1,13 @@
-﻿using ElasticSearch.API.DTOs;
-
-namespace ElasticSearch.API.Services;
+﻿namespace ElasticSearch.API.Services;
 
 public class ProductService
 {
     private readonly ProductRepository _productRepository;
-
-    public ProductService(ProductRepository productRepository)
+    private readonly ILogger<ProductService> _logger;
+    public ProductService(ProductRepository productRepository, ILogger<ProductService> logger)
     {
         _productRepository = productRepository;
+        _logger = logger;
     }
 
     public async Task<ResponseDto<ProductDto>> InsertAsync(ProductCreateDto request)
@@ -84,12 +83,20 @@ public class ProductService
 
     public async Task<ResponseDto<bool>> DeleteAsync(string id)
     {
-        bool succeeded = await _productRepository.DeleteAsync(id);
-        if (!succeeded)
+        var deleteResponse = await _productRepository.DeleteAsync(id);
+
+        if (deleteResponse.Result == Result.NotFound) //Ürün db'de yok mu?
         {
+            return ResponseDto<bool>.Fail("The item to be deleted was not found.", HttpStatusCode.NotFound);
+        }
+
+        if (!deleteResponse.IsValid)
+        {
+            _logger.LogError(deleteResponse.OriginalException, deleteResponse.ServerError.Error.ToString());
+
             return ResponseDto<bool>.Fail("The product could not be deleted.", HttpStatusCode.InternalServerError);
         }
 
-        return ResponseDto<bool>.Success(succeeded, HttpStatusCode.NoContent);
+        return ResponseDto<bool>.Success(deleteResponse.IsValid, HttpStatusCode.NoContent);
     }
 }
