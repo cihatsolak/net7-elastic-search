@@ -92,7 +92,7 @@ public class ProductService
 
         if (!deleteResponse.IsValid)
         {
-            _logger.LogError(deleteResponse.OriginalException, deleteResponse.ServerError.Error.ToString());
+            _logger.LogError(deleteResponse.OriginalException, deleteResponse.ServerError.Error.ToString()); //error log
 
             return ResponseDto<bool>.Fail("The product could not be deleted.", HttpStatusCode.InternalServerError);
         }
