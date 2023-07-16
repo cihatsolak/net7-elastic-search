@@ -4,6 +4,6 @@
     {
         public int Width { get; init; }
         public int Height { get; init; }
-        public EColor Color { get; init; }
+        public string Color { get; init; }
     }
 }

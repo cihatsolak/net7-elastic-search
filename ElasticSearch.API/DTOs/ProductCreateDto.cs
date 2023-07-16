@@ -17,7 +17,7 @@
                 Stock = Stock, 
                 Feature = new ProductFeature
                 {
-                    Color = Feature.Color,
+                    Color = (EColor)int.Parse(Feature.Color),
                     Height = Feature.Height,
                     Width = Feature.Width
                 }

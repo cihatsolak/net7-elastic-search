@@ -1,5 +1,6 @@
 ﻿using ElasticSearch.API.Models;
 using System.Collections.Immutable;
+using System.Globalization;
 
 namespace ElasticSearch.API.Services;
 
@@ -51,7 +52,7 @@ public class ProductService
                 {
                     Width = product.Feature.Width,
                     Height = product.Feature.Height,
-                    Color = product.Feature.Color
+                    Color = product.Feature.Color.ToString()
                 };
             }
 
@@ -59,5 +60,16 @@ public class ProductService
         }
 
         return ResponseDto<ImmutableList<ProductDto>>.Success(productDTOs.ToImmutableList(), HttpStatusCode.OK);
+    }
+
+    public async Task<ResponseDto<ProductDto>> GetByIdAsync(string id)
+    {
+        var hasProduct = await _productRepository.GetByIdAsync(id);
+        if (hasProduct is null)
+        {
+            return ResponseDto<ProductDto>.Fail("product not found.", HttpStatusCode.NotFound);
+        }
+
+        return ResponseDto<ProductDto>.Success(hasProduct.CreateDto(), HttpStatusCode.OK);
     }
 }

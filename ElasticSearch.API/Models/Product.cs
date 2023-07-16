@@ -34,7 +34,7 @@
             {
                 Width = Feature.Width,
                 Height = Feature.Height,
-                Color = Feature.Color
+                Color = Feature.Color.ToString()
             };
 
             return productDto;
