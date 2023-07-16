@@ -9,3 +9,4 @@ global using ElasticSearch.API.ElasticClientsSearch.Settings;
 global using Microsoft.AspNetCore.Mvc;
 global using System.Collections.Immutable;
 global using System.Net;
+global using System.Text.Json.Serialization;
