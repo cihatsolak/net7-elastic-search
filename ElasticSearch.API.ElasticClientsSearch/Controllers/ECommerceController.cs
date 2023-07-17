@@ -52,5 +52,12 @@
             var response = await _repository.PaginationQuery(pageIndex, pageSize);
             return Ok(response);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> WildCardQuery(string customerFullName)
+        {
+            var response = await _repository.WildCardQuery(customerFullName);
+            return Ok(response);
+        }
     }
 }

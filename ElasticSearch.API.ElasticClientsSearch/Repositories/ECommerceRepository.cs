@@ -71,7 +71,7 @@ public class ECommerceRepository
         return result.Documents.ToImmutableList();
     }
 
-    public async Task<ImmutableList<ECommerce>> PrefixQuery(string customerFullName)
+    public async Task<ImmutableList<ECommerce>> PrefixQuery(string customerFullName) //StartWith
     {
         var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
             .Size(50)
@@ -133,6 +133,24 @@ public class ECommerceRepository
                 .Size(pageSize)
                     .Query(query => query
                          .MatchAll())
+        );
+
+        return result.Documents.ToImmutableList();
+    }
+
+    public async Task<ImmutableList<ECommerce>> WildCardQuery(string customerFullName) //LIKE %Test%
+    {
+        //customerFullName -> Cih?t gibi request'den gelecek.
+
+        //Lam*    --> lam ile başlayan sonu ne olursa olsun
+        //Lam*rt  --> lam ile başlayıp rt ile biten ve arada hangi harfler olursa olsun
+        //Lambe?t --> Lambe ile başlayan, 7 karakterden oluşan, sonu t harfi ile biten  ve soru işareti yerine herhangi bir harf olabilecek
+
+        var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
+                .Query(query => query
+                     .Wildcard(wilcard => wilcard
+                        .Field(field => field.CustomerFullName.Suffix("keyword"))
+                            .Value(customerFullName)))
         );
 
         return result.Documents.ToImmutableList();
