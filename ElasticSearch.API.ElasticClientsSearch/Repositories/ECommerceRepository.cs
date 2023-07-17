@@ -105,4 +105,15 @@ public class ECommerceRepository
 
         return result.Documents.ToImmutableList();
     }
+
+    public async Task<ImmutableList<ECommerce>> MatchAllQuery()
+    {
+        var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
+            .Size(100)
+                .Query(query => query
+                     .MatchAll())
+        );
+
+        return result.Documents.ToImmutableList();
+    }
 }

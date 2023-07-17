@@ -38,5 +38,12 @@
             var response = await _repository.RangeQuery(fromPrice, toPrice);
             return Ok(response);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> MatchAllQuery()
+        {
+            var response = await _repository.MatchAllQuery();
+            return Ok(response);
+        }
     }
 }
