@@ -155,4 +155,26 @@ public class ECommerceRepository
 
         return result.Documents.ToImmutableList();
     }
+
+    public async Task<ImmutableList<ECommerce>> FuzzyAndOrderQuery(string customerName) //LIKE %Test%
+    {
+        //.Fuzziness(new Fuzziness(1)) --> 1 harf hatasını tolere et
+
+        var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
+                .Query(query => query
+                     .Fuzzy(wilcard => wilcard
+                        .Field(field => field.CustomerFirstName.Suffix("keyword"))
+                            .Value(customerName)
+                                .Fuzziness(new Fuzziness(1))))
+                                    .Sort(sort => sort
+                                            .Field(field => field.TaxFullTotalPrice, new FieldSort() { Order = SortOrder.Desc }))
+        );
+
+        foreach (var hit in result.Hits) //sonuca id değerini eklemek
+        {
+            hit.Source.Id = hit.Id;
+        }
+
+        return result.Documents.ToImmutableList();
+    }
 }

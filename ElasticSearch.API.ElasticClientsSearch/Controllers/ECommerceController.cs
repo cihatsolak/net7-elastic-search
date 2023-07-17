@@ -59,5 +59,12 @@
             var response = await _repository.WildCardQuery(customerFullName);
             return Ok(response);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> FuzzyAndOrderQuery(string customerName)
+        {
+            var response = await _repository.FuzzyAndOrderQuery(customerName);
+            return Ok(response);
+        }
     }
 }
