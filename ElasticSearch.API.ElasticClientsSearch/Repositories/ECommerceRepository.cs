@@ -116,4 +116,25 @@ public class ECommerceRepository
 
         return result.Documents.ToImmutableList();
     }
+
+    public async Task<ImmutableList<ECommerce>> PaginationQuery(int pageIndex, int pageSize)
+    {
+        //page=1 pageSize=10 => 1-10
+        //page=2 pageSize=10 => 11-20
+        //page=3 pageSize=10 => 21-30
+
+        if (Math.Sign(pageIndex) == -1)
+        {
+            pageIndex = 1;
+        }
+
+        var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
+            .From(pageSize * (pageIndex - 1))
+                .Size(pageSize)
+                    .Query(query => query
+                         .MatchAll())
+        );
+
+        return result.Documents.ToImmutableList();
+    }
 }

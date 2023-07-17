@@ -45,5 +45,12 @@
             var response = await _repository.MatchAllQuery();
             return Ok(response);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> PaginationQuery(int pageIndex, int pageSize)
+        {
+            var response = await _repository.PaginationQuery(pageIndex, pageSize);
+            return Ok(response);
+        }
     }
 }
