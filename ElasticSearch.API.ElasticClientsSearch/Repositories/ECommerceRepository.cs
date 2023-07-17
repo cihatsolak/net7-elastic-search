@@ -1,74 +1,85 @@
 ﻿using Elastic.Clients.Elasticsearch.QueryDsl;
-using ElasticSearch.API.ElasticClientsSearch.DTOs.EcommerceModel;
 
-namespace ElasticSearch.API.ElasticClientsSearch.Repositories
+namespace ElasticSearch.API.ElasticClientsSearch.Repositories;
+
+public class ECommerceRepository
 {
-    public class ECommerceRepository
+    private readonly ElasticsearchClient _elasticsearchClient;
+    private const string INDEX_NAME = "kibana_sample_data_ecommerce";
+
+    public ECommerceRepository(ElasticsearchClient elasticsearchClient)
     {
-        private readonly ElasticsearchClient _elasticsearchClient;
-        private const string INDEX_NAME = "kibana_sample_data_ecommerce";
+        _elasticsearchClient = elasticsearchClient;
+    }
 
-        public ECommerceRepository(ElasticsearchClient elasticsearchClient)
+    public async Task<ImmutableList<ECommerce>> TermQuery(string customerFirstName)
+    {
+        //1.Yol
+        //var result = await _elasticsearchClient.SearchAsync<ECommerce>(
+        //    search => search.Index(INDEX_NAME).Query(query => query.Term(t => t.Field("customer_first_name.keyword").Value(customerFirstName)))
+        //    );
+
+        //2.Yol
+        //var result = await _elasticsearchClient.SearchAsync<ECommerce>(
+        //    search => search.Index(INDEX_NAME).Query(query => query.Term(t => t.CustomerFirstName.Suffix("keyword"), customerFirstName))
+        //    );
+
+        //3.Yol
+        var termQuery = new TermQuery("customer_first_name.keyword")
         {
-            _elasticsearchClient = elasticsearchClient;
+            Value = customerFirstName,
+            CaseInsensitive = true
+        };
+
+        var result = await _elasticsearchClient.SearchAsync<ECommerce>(
+            search => search.Index(INDEX_NAME).Query(termQuery)
+            );
+
+        foreach (var hit in result.Hits)
+        {
+            hit.Source.Id = hit.Id;
         }
 
-        public async Task<ImmutableList<ECommerce>> TermQueryAsync(string customerFirstName)
+        return result.Documents.ToImmutableList();
+    }
+
+    public async Task<ImmutableList<ECommerce>> TermsQuery(List<string> customerFirstNameList)
+    {
+        var customerFirstNameTerms = customerFirstNameList.ConvertAll<FieldValue>(p => p);
+
+        var result = await _elasticsearchClient.SearchAsync<ECommerce>(
+            search => search.Index(INDEX_NAME).Size(100)
+                                              .Query(query =>
+                                                     query.Terms(terms =>
+                                                                 terms.Field(fields =>
+                                                                             fields.CustomerFirstName.Suffix("keyword")).Terms(new TermsQueryField(customerFirstNameTerms)))));
+        //2.Yol
+        //var termsQuery = new TermsQuery()
+        //{
+        //    Field = "customer_first_name.keyword",
+        //    Terms = new TermsQueryField(customerFirstNameTerms)
+        //};
+
+        //var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME).Query(termsQuery));
+
+        foreach (var hit in result.Hits)
         {
-            //1.Yol
-            //var result = await _elasticsearchClient.SearchAsync<ECommerce>(
-            //    search => search.Index(INDEX_NAME).Query(query => query.Term(t => t.Field("customer_first_name.keyword").Value(customerFirstName)))
-            //    );
-
-            //2.Yol
-            //var result = await _elasticsearchClient.SearchAsync<ECommerce>(
-            //    search => search.Index(INDEX_NAME).Query(query => query.Term(t => t.CustomerFirstName.Suffix("keyword"), customerFirstName))
-            //    );
-
-            //3.Yol
-            var termQuery = new TermQuery("customer_first_name.keyword")
-            {
-                Value = customerFirstName,
-                CaseInsensitive = true
-            };
-
-            var result = await _elasticsearchClient.SearchAsync<ECommerce>(
-                search => search.Index(INDEX_NAME).Query(termQuery)
-                );
-
-            foreach (var hit in result.Hits)
-            {
-                hit.Source.Id = hit.Id;
-            }
-
-            return result.Documents.ToImmutableList();
+            hit.Source.Id = hit.Id;
         }
 
-        public async Task<ImmutableList<ECommerce>> TermsQueryAsync(List<string> customerFirstNameList)
-        {
-            var customerFirstNameTerms = customerFirstNameList.ConvertAll<FieldValue>(p => p);
+        return result.Documents.ToImmutableList();
+    }
 
-            var result = await _elasticsearchClient.SearchAsync<ECommerce>(
-                search => search.Index(INDEX_NAME).Size(100)
-                                                  .Query(query => 
-                                                         query.Terms(terms => 
-                                                                     terms.Field(fields => 
-                                                                                 fields.CustomerFirstName.Suffix("keyword")).Terms(new TermsQueryField(customerFirstNameTerms)))));
-            //2.Yol
-            //var termsQuery = new TermsQuery()
-            //{
-            //    Field = "customer_first_name.keyword",
-            //    Terms = new TermsQueryField(customerFirstNameTerms)
-            //};
+    public async Task<ImmutableList<ECommerce>> PrefixQuery(string customerFullName)
+    {
+        var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
+            .Size(50)
+                .Query(query => query
+                    .Prefix(prefix => prefix
+                        .Field(field => field.CustomerFullName.Suffix("keyword"))
+                            .Value(customerFullName)))
+        );
 
-            //var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME).Query(termsQuery));
-
-            foreach (var hit in result.Hits)
-            {
-                hit.Source.Id = hit.Id;
-            }
-
-            return result.Documents.ToImmutableList();
-        }
+        return result.Documents.ToImmutableList();
     }
 }

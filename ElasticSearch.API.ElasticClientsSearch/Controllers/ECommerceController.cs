@@ -1,6 +1,6 @@
 ﻿namespace ElasticSearch.API.ElasticClientsSearch.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class ECommerceController : BaseController
     {
@@ -11,19 +11,25 @@
             _repository = repository;
         }
 
-        [HttpGet("{customerFirstName}")]
+        [HttpGet]
         public async Task<IActionResult> TermQuery(string customerFirstName)
         {
-            var response = await _repository.TermQueryAsync(customerFirstName);
+            var response = await _repository.TermQuery(customerFirstName);
             return Ok(response);
         }
 
         [HttpPost]
         public async Task<IActionResult> TermsQuery(List<string> customerFirstNameList)
         {
-            var response = await _repository.TermsQueryAsync(customerFirstNameList);
+            var response = await _repository.TermsQuery(customerFirstNameList);
             return Ok(response);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> PrefixQuery(string customerFullName)
+        {
+            var response = await _repository.PrefixQuery(customerFullName);
+            return Ok(response);
+        }
     }
 }

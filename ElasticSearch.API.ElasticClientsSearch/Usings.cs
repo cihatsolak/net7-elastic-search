@@ -1,6 +1,8 @@
 ﻿global using Elastic.Clients.Elasticsearch;
+global using Elastic.Clients.Elasticsearch.QueryDsl;
 global using Elastic.Transport;
 global using ElasticSearch.API.ElasticClientsSearch.DTOs;
+global using ElasticSearch.API.ElasticClientsSearch.DTOs.EcommerceModel;
 global using ElasticSearch.API.ElasticClientsSearch.Extensions;
 global using ElasticSearch.API.ElasticClientsSearch.Models;
 global using ElasticSearch.API.ElasticClientsSearch.Repositories;

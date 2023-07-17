@@ -24,10 +24,10 @@
         public DateTime OrderDate { get; set; }
 
         [JsonPropertyName("products")]
-        public Product[] Products { get; set; }
+        public EcommerceProduct[] Products { get; set; }
     }
 
-    public class Product
+    public class EcommerceProduct
     {
         [JsonPropertyName("product_id")]
         public long ProductId { get; set; }
