@@ -1,4 +1,5 @@
 ﻿using Elastic.Clients.Elasticsearch.QueryDsl;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace ElasticSearch.API.ElasticClientsSearch.Repositories;
 
@@ -79,6 +80,28 @@ public class ECommerceRepository
                         .Field(field => field.CustomerFullName.Suffix("keyword"))
                             .Value(customerFullName)))
         );
+
+        return result.Documents.ToImmutableList();
+    }
+
+    public async Task<ImmutableList<ECommerce>> RangeQuery(double fromPrice, double toPrice)
+    {
+        //gte: Greater Than Or Equals
+        //lte: Less Than Or Equals
+
+        var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
+            .Query(query => query
+                .Range(range => range
+                    .NumberRange(numberRange => numberRange
+                        .Field(field => field.TaxFullTotalPrice)
+                            .Gte(fromPrice)
+                            .Lte(toPrice))))
+        );
+
+        foreach (var hit in result.Hits) //sonuca id değerini eklemek
+        {
+            hit.Source.Id = hit.Id;
+        }
 
         return result.Documents.ToImmutableList();
     }

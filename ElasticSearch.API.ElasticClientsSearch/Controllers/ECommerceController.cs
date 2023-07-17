@@ -31,5 +31,12 @@
             var response = await _repository.PrefixQuery(customerFullName);
             return Ok(response);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> RangeQuery(double fromPrice, double toPrice)
+        {
+            var response = await _repository.RangeQuery(fromPrice, toPrice);
+            return Ok(response);
+        }
     }
 }
