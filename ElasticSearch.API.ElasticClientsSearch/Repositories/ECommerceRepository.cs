@@ -235,4 +235,31 @@ public class ECommerceRepository
 
         return result.Documents.ToImmutableList();
     }
+
+    public async Task<ImmutableList<ECommerce>> CompoundQueryExampleTwoQuery(string customerFullName)
+    {
+        var result1 = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
+                    .Size(500)
+                        .Query(query => query
+                             .Bool(b => b
+                                .Should(should => should
+                                    .Match(term => term
+                                        .Field(field => field)
+                                            .Query(customerFullName))
+                                    .Prefix(prefix => prefix
+                                        .Field(field => field.CustomerFullName.Suffix("keyword"))
+                                            .Value(customerFullName))
+                                        )
+                                )));
+
+
+        var result2 = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
+                  .Size(500)
+                      .Query(query => query
+                        .MatchPhrasePrefix(matchPhrasePrefix => matchPhrasePrefix
+                            .Field(field => field.CustomerFullName)
+                                .Query(customerFullName))));
+
+        return result1.Documents.ToImmutableList();
+    }
 }
