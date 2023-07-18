@@ -68,9 +68,23 @@ public class ECommerceController : BaseController
     }
 
     [HttpGet]
-    public async Task<IActionResult> FullTextMatchQuery(string categoryName)
+    public async Task<IActionResult> MatchQueryFullText(string categoryName)
     {
-        var response = await _repository.FullTextMatchQuery(categoryName);
+        var response = await _repository.MatchQueryFullText(categoryName);
+        return Ok(response);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> MatchBooleanPrefixFullTextQuery(string customerFullName)
+    {
+        var response = await _repository.MatchBooleanPrefixFullTextQuery(customerFullName);
+        return Ok(response);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> MatchPhraseFullTextQuery(string customerFullName)
+    {
+        var response = await _repository.MatchPhraseFullTextQuery(customerFullName);
         return Ok(response);
     }
 }

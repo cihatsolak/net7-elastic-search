@@ -175,13 +175,35 @@ public class ECommerceRepository
         return result.Documents.ToImmutableList();
     }
 
-    public async Task<ImmutableList<ECommerce>> FullTextMatchQuery(string categoryName)
+    public async Task<ImmutableList<ECommerce>> MatchQueryFullText(string categoryName)
     {
         var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
                 .Query(query => query
                      .Match(match => match
                         .Field(field => field.Category)
                             .Query(categoryName))));
+
+        return result.Documents.ToImmutableList();
+    }
+
+    public async Task<ImmutableList<ECommerce>> MatchBooleanPrefixFullTextQuery(string customerFullName)
+    {
+        var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
+                .Query(query => query
+                     .MatchBoolPrefix(matchBoolPrefix => matchBoolPrefix
+                        .Field(field => field.CustomerFullName)
+                            .Query(customerFullName))));
+
+        return result.Documents.ToImmutableList();
+    }
+
+    public async Task<ImmutableList<ECommerce>> MatchPhraseFullTextQuery(string customerFullName)
+    {
+        var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
+                .Query(query => query
+                     .MatchPhrase(matchPhrase => matchPhrase
+                        .Field(field => field.CustomerFullName)
+                            .Query(customerFullName))));
 
         return result.Documents.ToImmutableList();
     }
