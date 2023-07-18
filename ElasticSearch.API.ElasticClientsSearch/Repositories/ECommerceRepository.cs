@@ -207,4 +207,32 @@ public class ECommerceRepository
 
         return result.Documents.ToImmutableList();
     }
+
+    public async Task<ImmutableList<ECommerce>> CompoundQueryExampleOneQuery(string cityName, double taxFullTotalPrice, string categoryName, string manufacturer)
+    {
+        var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
+                    .Size(500)
+                        .Query(query => query
+                             .Bool(b => b
+                                .Must(must => must
+                                    .Term(term => term
+                                        .Field("geoip.city_name")
+                                            .Value(cityName)))
+                                .MustNot(mustNot => mustNot
+                                    .Range(range => range
+                                        .NumberRange(numberRange => numberRange
+                                            .Field(field => field.TaxFullTotalPrice)
+                                                .Lte(taxFullTotalPrice))))
+                                .Should(should => should
+                                    .Term(term => term
+                                        .Field(field => field.Category.Suffix("keyword"))
+                                            .Value(categoryName)))
+                                .Filter(filter => filter
+                                    .Term(term => term
+                                        .Field("manufacturer.keyword")
+                                            .Value(manufacturer)))
+                                )));
+
+        return result.Documents.ToImmutableList();
+    }
 }
