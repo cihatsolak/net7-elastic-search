@@ -186,6 +186,17 @@ public class ECommerceRepository
         return result.Documents.ToImmutableList();
     }
 
+    public async Task<ImmutableList<ECommerce>> MultiMatchQueryFullText(string name)
+    {
+        var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
+                .Query(query => query
+                     .MultiMatch(multiMatch => multiMatch
+                        .Fields(new Field("customer_first_name").And(new Field("customer_last_name")).And(new Field("customer_full_name")))
+                            .Query(name))));
+
+        return result.Documents.ToImmutableList();
+    }
+
     public async Task<ImmutableList<ECommerce>> MatchBooleanPrefixFullTextQuery(string customerFullName)
     {
         var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
