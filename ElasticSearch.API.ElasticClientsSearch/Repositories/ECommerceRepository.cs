@@ -1,7 +1,4 @@
-﻿using Elastic.Clients.Elasticsearch.QueryDsl;
-using Microsoft.AspNetCore.Http.HttpResults;
-
-namespace ElasticSearch.API.ElasticClientsSearch.Repositories;
+﻿namespace ElasticSearch.API.ElasticClientsSearch.Repositories;
 
 public class ECommerceRepository
 {
@@ -50,10 +47,10 @@ public class ECommerceRepository
 
         var result = await _elasticsearchClient.SearchAsync<ECommerce>(
             search => search.Index(INDEX_NAME).Size(100)
-                                              .Query(query =>
-                                                     query.Terms(terms =>
-                                                                 terms.Field(fields =>
-                                                                             fields.CustomerFirstName.Suffix("keyword")).Terms(new TermsQueryField(customerFirstNameTerms)))));
+                                                .Query(query => query
+                                                    .Terms(terms => terms
+                                                        .Field(fields => fields.CustomerFirstName.Suffix("keyword"))
+                                                            .Terms(new TermsQueryField(customerFirstNameTerms)))));
         //2.Yol
         //var termsQuery = new TermsQuery()
         //{
@@ -174,6 +171,17 @@ public class ECommerceRepository
         {
             hit.Source.Id = hit.Id;
         }
+
+        return result.Documents.ToImmutableList();
+    }
+
+    public async Task<ImmutableList<ECommerce>> FullTextMatchQuery(string categoryName)
+    {
+        var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
+                .Query(query => query
+                     .Match(match => match
+                        .Field(field => field.Category)
+                            .Query(categoryName))));
 
         return result.Documents.ToImmutableList();
     }
