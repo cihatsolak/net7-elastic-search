@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElasticSearch.API.ElasticCl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElasticSearch.API.Nest", "ElasticSearch.API.Nest\ElasticSearch.API.Nest.csproj", "{FE61CC8D-E442-4FD0-8601-26D2E3588940}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElasticSearch.API.Blog.Web", "ElasticSearch.API.Blog\ElasticSearch.API.Blog.Web.csproj", "{52D1838D-5B20-4204-956F-9590CA18E5BA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElasticSearch.Web.Blog", "ElasticSearch.Web.Blog\ElasticSearch.Web.Blog.csproj", "{392D556A-A208-42F3-9B7A-E1624532EB26}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{FE61CC8D-E442-4FD0-8601-26D2E3588940}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE61CC8D-E442-4FD0-8601-26D2E3588940}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE61CC8D-E442-4FD0-8601-26D2E3588940}.Release|Any CPU.Build.0 = Release|Any CPU
-		{52D1838D-5B20-4204-956F-9590CA18E5BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{52D1838D-5B20-4204-956F-9590CA18E5BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{52D1838D-5B20-4204-956F-9590CA18E5BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{52D1838D-5B20-4204-956F-9590CA18E5BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{392D556A-A208-42F3-9B7A-E1624532EB26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{392D556A-A208-42F3-9B7A-E1624532EB26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{392D556A-A208-42F3-9B7A-E1624532EB26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{392D556A-A208-42F3-9B7A-E1624532EB26}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

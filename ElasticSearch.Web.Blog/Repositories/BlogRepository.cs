@@ -1,4 +1,4 @@
-﻿namespace ElasticSearch.API.Blog.Controllers;
+﻿namespace ElasticSearch.Web.Blog.Repositories;
 
 public sealed class BlogRepository
 {
