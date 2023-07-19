@@ -1,8 +1,8 @@
-﻿using ElasticSearch.Web.Blog.Models;
+﻿using ElasticSearch.Web.Blogs.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace ElasticSearch.Web.Blog.Controllers
+namespace ElasticSearch.Web.Blogs.Controllers
 {
     public class HomeController : Controller
     {

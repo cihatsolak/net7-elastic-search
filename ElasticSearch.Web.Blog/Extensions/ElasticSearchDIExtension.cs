@@ -1,4 +1,4 @@
-﻿namespace ElasticSearch.Web.Blog.Extensions;
+﻿namespace ElasticSearch.Web.Blogs.Extensions;
 
 public static class ElasticSearchDIExtension
 {

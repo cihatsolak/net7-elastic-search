@@ -2,6 +2,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddCustomElasticSearch(builder.Configuration);
 builder.Services.AddScoped<BlogRepository>();
 
 var app = builder.Build();

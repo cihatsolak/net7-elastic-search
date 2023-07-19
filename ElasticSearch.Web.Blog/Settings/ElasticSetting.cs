@@ -1,4 +1,4 @@
-﻿namespace ElasticSearch.Web.Blog.Settings;
+﻿namespace ElasticSearch.Web.Blogs.Settings;
 
 public sealed record ElasticSetting
 {

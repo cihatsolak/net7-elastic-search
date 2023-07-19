@@ -1,4 +1,4 @@
-namespace ElasticSearch.Web.Blog.Models
+namespace ElasticSearch.Web.Blogs.Models
 {
     public class ErrorViewModel
     {
