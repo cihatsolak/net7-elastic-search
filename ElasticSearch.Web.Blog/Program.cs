@@ -4,6 +4,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddCustomElasticSearch(builder.Configuration);
 builder.Services.AddScoped<BlogRepository>();
+builder.Services.AddScoped<BlogService>();
 
 var app = builder.Build();
 

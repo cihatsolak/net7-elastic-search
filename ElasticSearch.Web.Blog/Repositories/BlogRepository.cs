@@ -14,7 +14,7 @@ public sealed class BlogRepository
     {
         blog.Created = DateTime.Now;
 
-        var result = await _elasticsearchClient.IndexAsync(blog, p => p.Index("products"));
+        var result = await _elasticsearchClient.IndexAsync(blog, p => p.Index(BLOG_INDEX_NAME));
         if (!result.IsValidResponse)
         {
             throw new Exception("Adding product failed.");
