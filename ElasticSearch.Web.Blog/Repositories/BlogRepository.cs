@@ -1,4 +1,7 @@
-﻿namespace ElasticSearch.Web.Blogs.Repositories;
+﻿using Elastic.Clients.Elasticsearch.QueryDsl;
+using Elastic.Clients.Elasticsearch;
+
+namespace ElasticSearch.Web.Blogs.Repositories;
 
 public sealed class BlogRepository
 {
@@ -27,23 +30,41 @@ public sealed class BlogRepository
 
     public async Task<List<Blog>> SearchAsync(string searchText)
     {
-        var result = await _elasticsearchClient.SearchAsync<Blog>(search => search.Index(BLOG_INDEX_NAME)
-            .Size(3)
-                .Query(query => query
-                    .Bool(b => b
-                        .Should(
-                            should => should.Match(match => match.Field(field => field.Content).Query(searchText)),
-                            should => should.MatchBoolPrefix(matchBoolPrefix => matchBoolPrefix.Field(field => field.Title).Query(searchText))
-                                )
-                         )
-                      )
-             );
+		List<Action<QueryDescriptor<Blog>>> listQuery = new();
 
-        foreach (var hit in result.Hits) 
-        {
-            hit.Source.Id = hit.Id;
-        }
+		Action<QueryDescriptor<Blog>> matchAll = (q) => q.MatchAll();
 
-        return result.Documents.ToList();
-    }
+		Action<QueryDescriptor<Blog>> matchContent = (q) => q.Match(m => m
+			.Field(f => f.Content)
+			.Query(searchText));
+
+		Action<QueryDescriptor<Blog>> titleMatchBoolPrefix = (q) => q.MatchBoolPrefix(m => m
+			.Field(f => f.Content)
+			.Query(searchText));
+
+		Action<QueryDescriptor<Blog>> tagTerm = (q) => q.Term(t => t.Field(f => f.Tags).Value(searchText));
+		
+
+		if (string.IsNullOrEmpty(searchText))
+		{
+			listQuery.Add(matchAll);
+		}
+
+		else
+		{
+
+			listQuery.Add(matchContent);
+			listQuery.Add(titleMatchBoolPrefix);
+			listQuery.Add(tagTerm);
+		}
+
+		var result = await _elasticsearchClient.SearchAsync<Blog>(s => s.Index(BLOG_INDEX_NAME)
+			.Size(1000).Query(q => q
+				.Bool(b => b
+					.Should(listQuery.ToArray()))));
+
+		foreach (var hit in result.Hits) hit.Source.Id = hit.Id;
+
+		return result.Documents.ToList();
+	}
 }

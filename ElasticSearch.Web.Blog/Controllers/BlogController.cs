@@ -28,4 +28,20 @@ public class BlogController : Controller
         TempData["result"] = "The blog has been successfully added.";
         return RedirectToAction(nameof(BlogController.Save));
     }
+
+    [HttpGet]
+    public async Task<IActionResult> Search()
+    {
+		var blogs = await _blogService.SearchAsync(string.Empty);
+		return View(blogs);
+	}
+
+    [HttpPost]
+    public async Task<IActionResult> Search(string searchText)
+    {
+        ViewBag.SearchText = searchText;
+
+        var blogs = await _blogService.SearchAsync(searchText);
+        return View(blogs);
+    }
 }
