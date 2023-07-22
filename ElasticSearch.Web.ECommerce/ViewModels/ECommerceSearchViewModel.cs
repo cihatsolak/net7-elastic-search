@@ -10,11 +10,11 @@ public class ECommerceSearchViewModel
 
 	[DisplayName("Order Date (Start)")]
 	[DataType(DataType.Date)]
-	public DateTime OrderDateStart { get; set; }
+	public DateTime? OrderDateStart { get; set; }
 
 	[DisplayName("Order Date (End)")]
 	[DataType(DataType.Date)]
-	public DateTime OrderDateEnd { get; set; }
+	public DateTime? OrderDateEnd { get; set; }
 
 	[DisplayName("Customer Full Name")]
 	public string CustomerFullName { get; set; }
