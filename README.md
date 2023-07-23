@@ -1,14 +1,14 @@
-# Net7 Elasticsearch Course
+# Net7 Elasticsearch
 
 ![Elasticsearch](https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Elasticsearch_logo.svg/2560px-Elasticsearch_logo.svg.png)
 
-Welcome to the Net7 Elasticsearch Course repository! This course is designed to teach you the ins and outs of Elasticsearch, an open-source distributed search and analytics engine. With Elasticsearch, you can store, search, analyze, and explore large volumes of data in real-time.
+Welcome to the Net7 Elasticsearch repository! This course is designed to teach you the ins and outs of Elasticsearch, an open-source distributed search and analytics engine. With Elasticsearch, you can store, search, analyze, and explore large volumes of data in real-time.
 
-## Course Overview
+## Overview
 
 Elasticsearch is a powerful tool that can revolutionize how you handle data, and this course will provide you with hands-on experience to master it. Whether you are a software developer, data analyst, or IT professional, this course is suitable for anyone looking to enhance their skills in data indexing and search capabilities.
 
-## Course Content
+## Content
 
 The course covers the following topics:
 
