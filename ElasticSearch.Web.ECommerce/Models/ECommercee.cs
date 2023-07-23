@@ -15,7 +15,7 @@ public class ECommercee
 	public string CustomerFullName { get; set; }
 
 	[JsonPropertyName("customer_gender")]
-	public string CustomerGender { get; set; }
+	public string Gender { get; set; }
 
 	[JsonPropertyName("taxful_total_price")]
 	public double TaxFullTotalPrice { get; set; }

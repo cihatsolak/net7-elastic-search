@@ -1,6 +1,4 @@
-﻿using Elastic.Clients.Elasticsearch;
-
-namespace ElasticSearch.Web.ECommerce.Repositories;
+﻿namespace ElasticSearch.Web.ECommerce.Repositories;
 
 public class ECommerceRepository
 {
@@ -12,7 +10,7 @@ public class ECommerceRepository
 		_elasticsearchClient = elasticsearchClient;
 	}
 
-	public async Task<Tuple<List<ECommercee>, long>> SearchAsync(ECommerceSearchViewModel searchViewModel, int pageIndex, int pageSize)
+	public async Task<(List<ECommercee>, long)> SearchAsync(ECommerceSearchViewModel searchViewModel, int pageIndex, int pageSize)
 	{
 		List<Action<QueryDescriptor<ECommercee>>> listQuery = new();
 
