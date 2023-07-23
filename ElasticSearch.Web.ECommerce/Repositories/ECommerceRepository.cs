@@ -1,4 +1,6 @@
-﻿namespace ElasticSearch.Web.ECommerce.Repositories;
+﻿using System.Drawing.Printing;
+
+namespace ElasticSearch.Web.ECommerce.Repositories;
 
 public class ECommerceRepository
 {
@@ -13,6 +15,13 @@ public class ECommerceRepository
 	public async Task<(List<ECommercee>, long)> SearchAsync(ECommerceSearchViewModel searchViewModel, int pageIndex, int pageSize)
 	{
 		List<Action<QueryDescriptor<ECommercee>>> listQuery = new();
+
+		if (searchViewModel is null) //herhangi bir filtreme yoksa
+		{
+			listQuery.Add(query => query.MatchAll());
+
+			return await CalcutaResultSetAsync(pageIndex, pageSize, listQuery);
+		}
 
 		if (!string.IsNullOrWhiteSpace(searchViewModel.Category))
 		{
@@ -53,13 +62,24 @@ public class ECommerceRepository
 			listQuery.Add(query => query
 							.Term(term => term
 								.Field(field => field)
-									.Value(searchViewModel.Gender)));
+									.Value(searchViewModel.Gender)
+										.CaseInsensitive()));
 		}
 
-		var result = await _elasticsearchClient.SearchAsync<ECommercee>(search => 
-																			search.Index(INDEX_NAME)
+		if (!listQuery.Any()) //herha
+		{
+			listQuery.Add(query => query.MatchAll());
+		}
+
+		return await CalcutaResultSetAsync(pageIndex, pageSize, listQuery);
+	}
+
+	private  async Task<(List<ECommercee>, long)> CalcutaResultSetAsync(int page, int pageSize, List<Action<QueryDescriptor<ECommercee>>> listQuery)
+	{
+		var result = await _elasticsearchClient.SearchAsync<ECommercee>(search =>
+																		search.Index(INDEX_NAME)
 																					.Size(pageSize)
-																						.From((pageIndex - 1) * pageSize)
+																						.From((page - 1) * pageSize)
 																							.Query(query => query
 																								.Bool(b => b
 																									.Must(listQuery.ToArray()))));
