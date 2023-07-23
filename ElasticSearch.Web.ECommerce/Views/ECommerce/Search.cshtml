@@ -60,6 +60,25 @@
                     }
                 </tbody>
             </table>
+            <nav>
+                <ul class="pagination">
+
+                    <li class="page-item">
+                        <a class="page-link" href="@Model.CreatePageUrl(Context.Request, 1, Model.PageSize)">First</a>
+                    </li>
+
+                    @for (int index = Model.StartPage(); index < Model.EndPage(); index++)
+                    {
+                        <li class="page-item @(Model.Page == index ? "active" : "")">
+                            <a class="page-link" href="@Model.CreatePageUrl(Context.Request, index, Model.PageSize)">@index</a>
+                        </li>
+                    }
+
+                    <li class="page-item">
+                        <a class="page-link" href="@Model.CreatePageUrl(Context.Request, Model.PageLinkCount, Model.PageSize)">Last</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 </div>
