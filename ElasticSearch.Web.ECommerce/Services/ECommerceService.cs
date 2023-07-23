@@ -11,7 +11,7 @@ public class ECommerceService
 
 	public async Task<(List<ECommerceViewModel>, long, long)> SearchAsync(ECommerceSearchViewModel searchViewModel, int pageIndex, int pageSize)
 	{
-		var (ecommerceList, totalRecords) =await _repository.SearchAsync(searchViewModel, pageIndex, pageSize);
+		var (ecommerceList, totalRecords) = await _repository.SearchAsync(searchViewModel, pageIndex, pageSize);
 
 		int totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
 
