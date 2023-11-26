@@ -1,9 +1,8 @@
-﻿namespace ElasticSearch.API.Nest.Models
+﻿namespace ElasticSearch.API.Nest.Models;
+
+public enum EColor
 {
-    public enum EColor
-    {
-        Red = 1,
-        Blue = 2,
-        Green = 3
-    }
+    Red = 1,
+    Blue = 2,
+    Green = 3
 }

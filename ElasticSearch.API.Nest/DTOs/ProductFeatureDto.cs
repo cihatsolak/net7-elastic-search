@@ -1,9 +1,8 @@
-﻿namespace ElasticSearch.API.Nest.DTOs
+﻿namespace ElasticSearch.API.Nest.DTOs;
+
+public record ProductFeatureDto
 {
-    public record ProductFeatureDto
-    {
-        public int Width { get; init; }
-        public int Height { get; init; }
-        public string Color { get; init; }
-    }
+    public int Width { get; init; }
+    public int Height { get; init; }
+    public string Color { get; init; }
 }

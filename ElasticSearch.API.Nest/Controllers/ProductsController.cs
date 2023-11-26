@@ -1,8 +1,4 @@
-﻿using ElasticSearch.API.Nest.DTOs;
-using ElasticSearch.API.Nest.Services;
-using Nest;
-
-namespace ElasticSearch.API.Nest.Controllers;
+﻿namespace ElasticSearch.API.Nest.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
