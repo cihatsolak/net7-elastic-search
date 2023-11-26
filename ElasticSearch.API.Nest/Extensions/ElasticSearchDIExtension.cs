@@ -1,6 +1,4 @@
-﻿using ElasticSearch.API.Nest.Settings;
-
-namespace ElasticSearch.API.Nest.Extensions;
+﻿namespace ElasticSearch.API.Nest.Extensions;
 
 public static class ElasticSearchDIExtension
 {
@@ -11,7 +9,7 @@ public static class ElasticSearchDIExtension
         //Gerçek hayatta birden fazla node ile çalışılabilir ama docker da tek node çalışıyoruz.
         var singleNodeConnectionPool = new SingleNodeConnectionPool(new Uri(elasticSetting.Uri));
         var connectionString = new ConnectionSettings(singleNodeConnectionPool).DisableDirectStreaming();
-
+        
         //connectionString = connectionString.BasicAuthentication(elasticSetting.Username, elasticSetting.Password);
 
         var elasticClient = new ElasticClient(connectionString);

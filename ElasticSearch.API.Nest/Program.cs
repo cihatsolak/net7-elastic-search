@@ -1,7 +1,3 @@
-using ElasticSearch.API.Nest.Extensions;
-using ElasticSearch.API.Nest.Repositories;
-using ElasticSearch.API.Nest.Services;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();

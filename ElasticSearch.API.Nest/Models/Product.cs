@@ -1,6 +1,4 @@
-﻿using ElasticSearch.API.Nest.DTOs;
-
-namespace ElasticSearch.API.Nest.Models
+﻿namespace ElasticSearch.API.Nest.Models
 {
     public class Product
     {

@@ -1,7 +1,4 @@
-﻿using ElasticSearch.API.Nest.DTOs;
-using ElasticSearch.API.Nest.Models;
-
-namespace ElasticSearch.API.Nest.Repositories;
+﻿namespace ElasticSearch.API.Nest.Repositories;
 
 public class ProductRepository
 {
