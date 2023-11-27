@@ -92,7 +92,7 @@ public class ProductService
 
         if (!deleteResponse.IsValidResponse)
         {
-            deleteResponse.TryGetOriginalException(out Exception exception);
+            _ = deleteResponse.TryGetOriginalException(out Exception exception);
 
             _logger.LogError(exception, deleteResponse.ElasticsearchServerError.Error.ToString()); //error log
 
