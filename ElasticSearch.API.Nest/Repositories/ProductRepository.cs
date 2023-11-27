@@ -1,4 +1,7 @@
-﻿namespace ElasticSearch.API.Nest.Repositories;
+﻿using Microsoft.VisualBasic;
+using Nest;
+
+namespace ElasticSearch.API.Nest.Repositories;
 
 public class ProductRepository
 {
@@ -62,6 +65,30 @@ public class ProductRepository
         response.Source.Id = response.Id;
 
         return response.Source;
+    }
+
+    public async Task<ImmutableList<Product>> GetByNameAsync(string name)
+    {
+        var result = await _elasticClient.SearchAsync<Product>(search => search.Index(PRODUCT_INDEX_NAME)
+            .Query(query => query
+                .Match(match => match
+                    .Field(field => field.Name)
+                        .Query(name)
+                            .Fuzziness(Fuzziness.Auto)
+                                .Operator(Operator.And)
+            )));
+
+        if (!result.IsValid)
+        {
+            return (ImmutableList<Product>)Enumerable.Empty<Product>();
+        }
+
+        foreach (var hit in result.Hits) //ürün id'lerini almak
+        {
+            hit.Source.Id = hit.Id;
+        }
+
+        return result.Documents.ToImmutableList();
     }
 
     public async Task<bool> UpdateAsync(ProductUpdateDto productUpdateDto)

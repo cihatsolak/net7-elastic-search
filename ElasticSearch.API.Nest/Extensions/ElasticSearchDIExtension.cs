@@ -10,7 +10,7 @@ public static class ElasticSearchDIExtension
         var singleNodeConnectionPool = new SingleNodeConnectionPool(new Uri(elasticSetting.Uri));
         var connectionString = new ConnectionSettings(singleNodeConnectionPool).DisableDirectStreaming();
         
-        //connectionString = connectionString.BasicAuthentication(elasticSetting.Username, elasticSetting.Password);
+        connectionString = connectionString.BasicAuthentication(elasticSetting.Username, elasticSetting.Password);
 
         var elasticClient = new ElasticClient(connectionString);
 

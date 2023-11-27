@@ -71,6 +71,46 @@ public class ProductService
         return ResponseDto<ProductDto>.Success(hasProduct.CreateDto(), HttpStatusCode.OK);
     }
 
+    public async Task<ResponseDto<ImmutableList<ProductDto>>> GetByNameAsync(string name)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(name);
+
+        var products = await _productRepository.GetByNameAsync(name);
+        if (!products.Any())
+        {
+            return ResponseDto<ImmutableList<ProductDto>>.Fail("product not found.", HttpStatusCode.NotFound);
+        }
+
+        List<ProductDto> productDTOs = new();
+
+        foreach (var product in products)
+        {
+            ProductDto productDto = new()
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Price = product.Price,
+                Stock = product.Stock,
+                Created = product.Created,
+                Updated = product.Updated
+            };
+
+            if (product.Feature is not null)
+            {
+                productDto.Feature = new ProductFeatureDto
+                {
+                    Width = product.Feature.Width,
+                    Height = product.Feature.Height,
+                    Color = product.Feature.Color.ToString()
+                };
+            }
+
+            productDTOs.Add(productDto);
+        }
+
+        return ResponseDto<ImmutableList<ProductDto>>.Success(productDTOs.ToImmutableList(), HttpStatusCode.OK);
+    }
+
     public async Task<ResponseDto<bool>> UpdateAsync(ProductUpdateDto productUpdateDto)
     {
         bool succeeded = await _productRepository.UpdateAsync(productUpdateDto);
