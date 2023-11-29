@@ -193,10 +193,10 @@ public class ECommerceRepository
     public async Task<ImmutableList<ECommerce>> MatchQueryFullText(string categoryName)
     {
         var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
-                .Query(query => query
-                     .Match(match => match
-                        .Field(field => field.Category)
-                            .Query(categoryName))));
+                    .Query(query => query
+                         .Match(match => match
+                            .Field(field => field.Category)
+                                .Query(categoryName))));
 
         return result.Documents.ToImmutableList();
     }
@@ -208,17 +208,17 @@ public class ECommerceRepository
                      .MultiMatch(multiMatch => multiMatch
                         .Fields(new Field("customer_first_name").And(new Field("customer_last_name")).And(new Field("customer_full_name")))
                             .Query(name))));
-
+            
         return result.Documents.ToImmutableList();
     }
 
     public async Task<ImmutableList<ECommerce>> MatchBooleanPrefixFullTextQuery(string customerFullName)
     {
         var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
-                .Query(query => query
-                     .MatchBoolPrefix(matchBoolPrefix => matchBoolPrefix
-                        .Field(field => field.CustomerFullName)
-                            .Query(customerFullName))));
+                            .Query(query => query
+                                 .MatchBoolPrefix(matchBoolPrefix => matchBoolPrefix
+                                    .Field(field => field.CustomerFullName)
+                                        .Query(customerFullName))));
 
         return result.Documents.ToImmutableList();
     }
@@ -226,10 +226,10 @@ public class ECommerceRepository
     public async Task<ImmutableList<ECommerce>> MatchPhraseFullTextQuery(string customerFullName)
     {
         var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
-                .Query(query => query
-                     .MatchPhrase(matchPhrase => matchPhrase
-                        .Field(field => field.CustomerFullName)
-                            .Query(customerFullName))));
+                    .Query(query => query
+                         .MatchPhrase(matchPhrase => matchPhrase
+                            .Field(field => field.CustomerFullName)
+                                .Query(customerFullName))));
 
         return result.Documents.ToImmutableList();
     }
