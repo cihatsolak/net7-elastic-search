@@ -226,10 +226,10 @@ public class ECommerceRepository
     public async Task<ImmutableList<ECommerce>> MatchPhraseFullTextQuery(string customerFullName)
     {
         var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
-                    .Query(query => query
-                         .MatchPhrase(matchPhrase => matchPhrase
-                            .Field(field => field.CustomerFullName)
-                                .Query(customerFullName))));
+                            .Query(query => query
+                                 .MatchPhrase(matchPhrase => matchPhrase
+                                    .Field(field => field.CustomerFullName)
+                                        .Query(customerFullName))));
 
         return result.Documents.ToImmutableList();
     }
@@ -243,7 +243,8 @@ public class ECommerceRepository
                                 .Must(must => must
                                     .Term(term => term
                                         .Field("geoip.city_name")
-                                            .Value(cityName)))
+                                            .Value(cityName)
+                                                .CaseInsensitive(true)))
                                 .MustNot(mustNot => mustNot
                                     .Range(range => range
                                         .NumberRange(numberRange => numberRange
@@ -252,12 +253,13 @@ public class ECommerceRepository
                                 .Should(should => should
                                     .Term(term => term
                                         .Field(field => field.Category.Suffix("keyword"))
-                                            .Value(categoryName)))
+                                            .Value(categoryName)
+                                                .CaseInsensitive(true)))
                                 .Filter(filter => filter
                                     .Term(term => term
                                         .Field("manufacturer.keyword")
-                                            .Value(manufacturer)))
-                                )));
+                                            .Value(manufacturer)
+                                                .CaseInsensitive(true))))));
 
         return result.Documents.ToImmutableList();
     }
@@ -274,9 +276,8 @@ public class ECommerceRepository
                                             .Query(customerFullName))
                                     .Prefix(prefix => prefix
                                         .Field(field => field.CustomerFullName.Suffix("keyword"))
-                                            .Value(customerFullName))
-                                        )
-                                )));
+                                            .Value(customerFullName)
+                                                .CaseInsensitive(true))))));
 
 
         var result2 = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
