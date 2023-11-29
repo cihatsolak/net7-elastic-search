@@ -47,14 +47,14 @@ public class ECommerceRepository
 
     public async Task<ImmutableList<ECommerce>> TermsQuery(List<string> customerFirstNameList)
     {
-        var customerFirstNameTerms = customerFirstNameList.ConvertAll<FieldValue>(p => p);
+        var customerFirstNameTerms = customerFirstNameList.ConvertAll<FieldValue>(property => property);
 
-        var result = await _elasticsearchClient.SearchAsync<ECommerce>(
-            search => search.Index(INDEX_NAME).Size(100)
-                                                .Query(query => query
-                                                    .Terms(terms => terms
-                                                        .Field(fields => fields.CustomerFirstName.Suffix("keyword"))
-                                                            .Terms(new TermsQueryField(customerFirstNameTerms)))));
+        var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
+                                .Size(100)
+                                  .Query(query => query
+                                      .Terms(terms => terms
+                                          .Field(field => field.CustomerFirstName.Suffix("keyword"))
+                                              .Terms(new TermsQueryField(customerFirstNameTerms)))));
         //2.Yol
         //var termsQuery = new TermsQuery()
         //{
@@ -75,12 +75,12 @@ public class ECommerceRepository
     public async Task<ImmutableList<ECommerce>> PrefixQuery(string customerFullName) //StartWith
     {
         var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
-            .Size(50)
-                .Query(query => query
-                    .Prefix(prefix => prefix
-                        .Field(field => field.CustomerFullName.Suffix("keyword"))
-                            .Value(customerFullName)))
-        );
+                                .Size(50)
+                                    .Query(query => query
+                                        .Prefix(prefix => prefix
+                                            .Field(field => field.CustomerFullName.Suffix("keyword"))
+                                                .Value(customerFullName)
+                                                    .CaseInsensitive(true))));
 
         return result.Documents.ToImmutableList();
     }
@@ -91,13 +91,21 @@ public class ECommerceRepository
         //lte: Less Than Or Equals
 
         var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
-            .Query(query => query
-                .Range(range => range
-                    .NumberRange(numberRange => numberRange
-                        .Field(field => field.TaxFullTotalPrice)
-                            .Gte(fromPrice)
-                            .Lte(toPrice))))
-        );
+                                .Query(query => query
+                                    .Range(range => range
+                                        .NumberRange(numberRange => numberRange
+                                            .Field(field => field.TaxFullTotalPrice)
+                                                .Gte(fromPrice)
+                                                    .Lte(toPrice)))));
+
+        //var result2 = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
+        //                        .Size(10)
+        //                            .Query(query => query
+        //                                .Range(range => range
+        //                                    .DateRange(dateRange => dateRange
+        //                                        .Field(field => field.OrderDate)
+        //                                            .Gt(DateTime.Now)
+        //                                               .Lt(DateTime.Now)))));
 
         foreach (var hit in result.Hits) //sonuca id değerini eklemek
         {
@@ -110,10 +118,9 @@ public class ECommerceRepository
     public async Task<ImmutableList<ECommerce>> MatchAllQuery()
     {
         var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
-            .Size(100)
-                .Query(query => query
-                     .MatchAll())
-        );
+                            .Size(100)
+                                .Query(query => query
+                                     .MatchAll()));
 
         return result.Documents.ToImmutableList();
     }
@@ -124,17 +131,11 @@ public class ECommerceRepository
         //page=2 pageSize=10 => 11-20
         //page=3 pageSize=10 => 21-30
 
-        if (Math.Sign(pageIndex) == -1)
-        {
-            pageIndex = 1;
-        }
-
         var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
-            .From(pageSize * (pageIndex - 1))
-                .Size(pageSize)
-                    .Query(query => query
-                         .MatchAll())
-        );
+                        .From(pageSize * (pageIndex - 1))
+                            .Size(pageSize)
+                                .Query(query => query
+                                     .MatchAll()));
 
         return result.Documents.ToImmutableList();
     }

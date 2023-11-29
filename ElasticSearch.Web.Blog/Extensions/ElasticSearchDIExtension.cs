@@ -14,4 +14,23 @@ public static class ElasticSearchDIExtension
 
         services.AddSingleton(elasticsearchClient);
     }
+
+    private static async Task AddDefaultMappings(ElasticsearchClient client)
+    {
+
+        const string blogIndexName = "blog";
+
+        var existsResponse = await client.Indices.ExistsAsync(blogIndexName);
+        if (existsResponse.Exists)
+            return;
+
+        var createIndexResponse = await client.Indices.CreateAsync<Blog>(blogIndexName, indexDescriptor => indexDescriptor
+                                         .Mappings(map => map
+                                             .Properties(props => props
+                                                 .Text(blog => blog.Title, textDescriptor => textDescriptor.Fields(field => field.Keyword(blog => blog.Title)))
+                                                 .Text(blog => blog.Content)
+                                                 .Keyword(blog => blog.UserId)
+                                                 .Keyword(blog => blog.Tags)
+                                                 .Date(blog => blog.Created))));
+    }
 }
