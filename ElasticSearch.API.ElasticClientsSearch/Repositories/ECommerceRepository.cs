@@ -149,11 +149,11 @@ public class ECommerceRepository
         //Lambe?t --> Lambe ile başlayan, 7 karakterden oluşan, sonu t harfi ile biten  ve soru işareti yerine herhangi bir harf olabilecek
 
         var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
-                .Query(query => query
-                     .Wildcard(wilcard => wilcard
-                        .Field(field => field.CustomerFullName.Suffix("keyword"))
-                            .Value(customerFullName)))
-        );
+                            .Query(query => query
+                                 .Wildcard(wilcard => wilcard
+                                    .Field(field => field.CustomerFullName.Suffix("keyword"))
+                                        .Value(customerFullName)
+                                           .CaseInsensitive())));
 
         return result.Documents.ToImmutableList();
     }
