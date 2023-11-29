@@ -13,9 +13,13 @@ public class ECommerceRepository
     public async Task<ImmutableList<ECommerce>> TermQuery(string customerFirstName)
     {
         //1.Yol
-        //var result = await _elasticsearchClient.SearchAsync<ECommerce>(
-        //    search => search.Index(INDEX_NAME).Query(query => query.Term(t => t.Field("customer_first_name.keyword").Value(customerFirstName)))
-        //    );
+        var result = await _elasticsearchClient.SearchAsync<ECommerce>(
+            search => search.Index(INDEX_NAME)
+                                .Query(query => query
+                                    .Term(term => term
+                                        .Field(field => field.CustomerFirstName.Suffix("keyword"))
+                                            .Value(customerFirstName)
+                                                .CaseInsensitive())));
 
         //2.Yol
         //var result = await _elasticsearchClient.SearchAsync<ECommerce>(
@@ -23,15 +27,15 @@ public class ECommerceRepository
         //    );
 
         //3.Yol
-        var termQuery = new TermQuery("customer_first_name.keyword")
-        {
-            Value = customerFirstName,
-            CaseInsensitive = true
-        };
+        //var termQuery = new TermQuery("customer_first_name.keyword")
+        //{
+        //    Value = customerFirstName,
+        //    CaseInsensitive = true
+        //};
 
-        var result = await _elasticsearchClient.SearchAsync<ECommerce>(
-            search => search.Index(INDEX_NAME).Query(termQuery)
-            );
+        //var result = await _elasticsearchClient.SearchAsync<ECommerce>(
+        //    search => search.Index(INDEX_NAME).Query(termQuery)
+        //    );
 
         foreach (var hit in result.Hits)
         {
