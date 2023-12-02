@@ -1,7 +1,4 @@
-﻿using Elastic.Clients.Elasticsearch.QueryDsl;
-using Elastic.Clients.Elasticsearch;
-
-namespace ElasticSearch.Web.Blogs.Repositories;
+﻿namespace ElasticSearch.Web.Blogs.Repositories;
 
 public sealed class BlogRepository
 {
@@ -13,7 +10,7 @@ public sealed class BlogRepository
         _elasticsearchClient = elasticsearchClient;
     }
 
-    public async Task<Blog> InsertAsync(Models.Blog blog)
+    public async Task<Blog> InsertAsync(Blog blog)
     {
         blog.Created = DateTime.Now;
 
@@ -32,36 +29,38 @@ public sealed class BlogRepository
     {
 		List<Action<QueryDescriptor<Blog>>> listQuery = new();
 
-		Action<QueryDescriptor<Blog>> matchAll = (q) => q.MatchAll();
+		Action<QueryDescriptor<Blog>> matchAllQuery = (query) => query.MatchAll();
 
-		Action<QueryDescriptor<Blog>> matchContent = (q) => q.Match(m => m
-			.Field(f => f.Content)
-			.Query(searchText));
+		Action<QueryDescriptor<Blog>> matchContentQuery = (query) => query.Match(match => match
+																			 .Field(field => field.Content)
+																				.Query(searchText));
 
-		Action<QueryDescriptor<Blog>> titleMatchBoolPrefix = (q) => q.MatchBoolPrefix(m => m
-			.Field(f => f.Content)
-			.Query(searchText));
+		Action<QueryDescriptor<Blog>> titleMatchBoolPrefixQuery = (query) => query.MatchBoolPrefix(match => match
+																					 .Field(field => field.Content)
+																						.Query(searchText));
 
-		Action<QueryDescriptor<Blog>> tagTerm = (q) => q.Term(t => t.Field(f => f.Tags).Value(searchText));
+		Action<QueryDescriptor<Blog>> tagTermQuery = (query) => query.Term(term => term
+																		.Field(field => field.Tags)
+																			.Value(searchText));
 		
 
 		if (string.IsNullOrEmpty(searchText))
 		{
-			listQuery.Add(matchAll);
+			listQuery.Add(matchAllQuery);
 		}
-
 		else
 		{
 
-			listQuery.Add(matchContent);
-			listQuery.Add(titleMatchBoolPrefix);
-			listQuery.Add(tagTerm);
+			listQuery.Add(matchContentQuery);
+			listQuery.Add(titleMatchBoolPrefixQuery);
+			listQuery.Add(tagTermQuery);
 		}
 
-		var result = await _elasticsearchClient.SearchAsync<Blog>(s => s.Index(BLOG_INDEX_NAME)
-			.Size(1000).Query(q => q
-				.Bool(b => b
-					.Should(listQuery.ToArray()))));
+		var result = await _elasticsearchClient.SearchAsync<Blog>(search => search.Index(BLOG_INDEX_NAME)
+					.Size(1000)
+						.Query(query => query
+							.Bool(b => b
+								.Should(listQuery.ToArray()))));
 
 		foreach (var hit in result.Hits) hit.Source.Id = hit.Id;
 

@@ -1,4 +1,5 @@
 ﻿global using Elastic.Clients.Elasticsearch;
+global using Elastic.Clients.Elasticsearch.QueryDsl;
 global using Elastic.Transport;
 global using ElasticSearch.Web.Blogs.Extensions;
 global using ElasticSearch.Web.Blogs.Models;
@@ -9,4 +10,5 @@ global using ElasticSearch.Web.Blogs.ViewModels;
 global using Microsoft.AspNetCore.Mvc;
 global using System.ComponentModel;
 global using System.ComponentModel.DataAnnotations;
+global using System.Diagnostics;
 global using System.Text.Json.Serialization;
