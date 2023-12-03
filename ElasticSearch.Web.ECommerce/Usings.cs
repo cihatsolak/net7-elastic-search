@@ -7,6 +7,7 @@ global using ElasticSearch.Web.ECommerce.Repositories;
 global using ElasticSearch.Web.ECommerce.Services;
 global using ElasticSearch.Web.ECommerce.Settings;
 global using ElasticSearch.Web.ECommerce.ViewModels;
+global using Microsoft.AspNetCore.Mvc;
 global using System.ComponentModel;
 global using System.ComponentModel.DataAnnotations;
 global using System.Text.Json.Serialization;

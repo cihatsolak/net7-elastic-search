@@ -1,6 +1,4 @@
-﻿using System.Drawing.Printing;
-
-namespace ElasticSearch.Web.ECommerce.Repositories;
+﻿namespace ElasticSearch.Web.ECommerce.Repositories;
 
 public class ECommerceRepository
 {

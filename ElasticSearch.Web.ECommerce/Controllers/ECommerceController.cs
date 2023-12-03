@@ -1,9 +1,6 @@
-﻿using ElasticSearch.Web.ECommerce.Services;
-using Microsoft.AspNetCore.Mvc;
+﻿namespace ElasticSearch.Web.ECommerce.Controllers;
 
-namespace ElasticSearch.Web.ECommerce.Controllers
-{
-	public class ECommerceController : Controller
+public class ECommerceController : Controller
 	{
 		private readonly ECommerceService _eCommerceService;
 
@@ -24,4 +21,3 @@ namespace ElasticSearch.Web.ECommerce.Controllers
 			return View(searchPageViewModel);
 		}
 	}
-}
