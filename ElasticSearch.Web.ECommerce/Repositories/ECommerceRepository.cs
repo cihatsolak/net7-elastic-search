@@ -26,7 +26,8 @@ public class ECommerceRepository
 			listQuery.Add(query => query
 									.Match(match => match
 										.Field(field => field.Category)
-											.Query(searchViewModel.Category)));
+											.Query(searchViewModel.Category)
+												.Operator(Operator.Or)));
 		}
 
 		if (!string.IsNullOrWhiteSpace(searchViewModel.CustomerFullName))
@@ -34,7 +35,9 @@ public class ECommerceRepository
 			listQuery.Add(query => query
 									.Match(match => match
 										.Field(field => field.CustomerFullName)
-											.Query(searchViewModel.CustomerFullName)));
+											.Query(searchViewModel.CustomerFullName)
+												.Operator(Operator.And)
+                                                    .Fuzziness(new Fuzziness("AUTO"))));
 		}
 
 		if (searchViewModel.OrderDateStart.HasValue)
@@ -64,7 +67,7 @@ public class ECommerceRepository
 										.CaseInsensitive()));
 		}
 
-		if (!listQuery.Any()) //herha
+		if (!listQuery.Any())
 		{
 			listQuery.Add(query => query.MatchAll());
 		}
