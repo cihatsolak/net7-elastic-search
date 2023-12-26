@@ -206,7 +206,7 @@ public class ECommerceRepository
         var result = await _elasticsearchClient.SearchAsync<ECommerce>(search => search.Index(INDEX_NAME)
                 .Query(query => query
                      .MultiMatch(multiMatch => multiMatch
-                        .Fields(new Field("customer_first_name").And(new Field("customer_last_name")).And(new Field("customer_full_name")))
+                        .Fields(new Field("customer_first_name^0.3").And(new Field("customer_last_name")).And(new Field("customer_full_name")))
                             .Query(name))));
             
         return result.Documents.ToImmutableList();
